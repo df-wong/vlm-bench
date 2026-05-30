@@ -1,0 +1,23 @@
+# Standardized benchmark configuration
+
+model:
+  name: llava-v1.6
+  variant: 7b
+  dtype: float16
+
+backend:
+  name: pytorch
+  device: cuda:0
+
+benchmark:
+  warmup_iterations: 10
+  iterations: 100
+  batch_sizes: [1, 2, 4]
+  input_sizes: [[224, 224], [336, 336]]
+  sequence_lengths: [128, 512]
+  measure_memory: true
+  profile: false
+  output_dir: results/
+
+log_level: INFO
+seed: 42

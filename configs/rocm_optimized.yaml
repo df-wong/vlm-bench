@@ -1,0 +1,39 @@
+# ROCm-optimized configuration for AMD GPUs
+
+model:
+  name: llava-v1.6
+  variant: 7b
+  dtype: float16
+  max_length: 4096
+  trust_remote_code: true
+  attn_implementation: flash_attention_2
+
+backend:
+  name: rocm
+  device: cuda:0
+  compile_model: true
+  compile_mode: max-autotune
+  quantize: null
+  kv_cache_dtype: fp8
+  use_cuda_graph: true
+
+benchmark:
+  warmup_iterations: 20
+  iterations: 200
+  batch_sizes: [1, 2, 4, 8, 16]
+  input_sizes: [[336, 336], [672, 672]]
+  sequence_lengths: [256, 512, 1024, 2048]
+  measure_memory: true
+  profile: true
+  output_dir: results/rocm/
+
+server:
+  host: 0.0.0.0
+  port: 8000
+  workers: 2
+  max_batch_size: 16
+  max_queue_size: 200
+  timeout: 120.0
+
+log_level: INFO
+seed: 42

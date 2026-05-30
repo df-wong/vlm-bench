@@ -1,0 +1,97 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel>=0.41.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "vlm-bench"
+version = "0.2.0"
+description = "Multi-modal VLM benchmarking & inference for AMD GPUs"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Difa Wong", email = "dfwong@proton.me"},
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: System :: Hardware :: GPU",
+]
+keywords = ["vlm", "benchmark", "rocm", "amd", "gpu", "vision-language", "inference"]
+dependencies = [
+    "torch>=2.1.0",
+    "torchvision>=0.16.0",
+    "transformers>=4.36.0",
+    "accelerate>=0.25.0",
+    "pillow>=10.0.0",
+    "pyyaml>=6.0",
+    "rich>=13.0.0",
+    "click>=8.1.0",
+    "numpy>=1.24.0",
+    "tqdm>=4.65.0",
+    "safetensors>=0.4.0",
+    "huggingface-hub>=0.20.0",
+]
+
+[project.optional-dependencies]
+rocm = [
+    "onnxruntime-gpu>=1.16.0",
+    "triton>=2.1.0",
+]
+server = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "python-multipart>=0.0.6",
+    "sse-starlette>=1.8.0",
+    "pydantic>=2.5.0",
+]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.7.0",
+    "pre-commit>=3.5.0",
+]
+benchmark = [
+    "matplotlib>=3.8.0",
+    "pandas>=2.1.0",
+    "tabulate>=0.9.0",
+]
+
+[project.scripts]
+vlm-bench = "vlm_bench.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "W", "I", "N", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "slow: marks tests as slow (deselect with '-m "not slow"')",
+    "gpu: marks tests requiring GPU",
+    "rocm: marks tests requiring ROCm",
+]

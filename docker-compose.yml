@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  vlm-bench:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - model-cache:/root/.cache/huggingface
+      - ./configs:/app/configs
+    environment:
+      - HIP_VISIBLE_DEVICES=0
+      - PYTORCH_HIP_ALLOC_CONF=expandable_segments:True
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  benchmark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ["vlm-bench", "benchmark"]
+    volumes:
+      - model-cache:/root/.cache/huggingface
+      - ./results:/app/results
+      - ./configs:/app/configs
+    environment:
+      - HIP_VISIBLE_DEVICES=0
+
+volumes:
+  model-cache:

@@ -1,0 +1,38 @@
+# vlm-bench default configuration
+
+model:
+  name: llava-v1.6
+  variant: 7b
+  dtype: float16
+  max_length: 2048
+  trust_remote_code: false
+  attn_implementation: null
+
+backend:
+  name: pytorch
+  device: cuda:0
+  compile_model: false
+  compile_mode: reduce-overhead
+  quantize: null
+  use_cuda_graph: false
+
+benchmark:
+  warmup_iterations: 10
+  iterations: 100
+  batch_sizes: [1, 2, 4, 8]
+  input_sizes: [[224, 224], [336, 336]]
+  sequence_lengths: [128, 512, 1024]
+  measure_memory: true
+  profile: false
+  output_dir: results/
+
+server:
+  host: 0.0.0.0
+  port: 8000
+  workers: 1
+  max_batch_size: 8
+  max_queue_size: 100
+  timeout: 60.0
+
+log_level: INFO
+seed: 42
